@@ -105,6 +105,12 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.palette.v7)
+
+    //Easy navigation component
+    implementation (libs.core)
+    ksp (libs.ksp)
+    // V2 only: for bottom sheet destination support, also add
+    implementation (libs.compose.destinations.bottom.sheet)
 }
 kapt {
     correctErrorTypes = true
