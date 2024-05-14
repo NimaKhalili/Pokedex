@@ -68,56 +68,56 @@ fun PokemonDetailScreen(
     }
 
 }
-
-@Destination<RootGraph>(start = true)
-@Composable
-fun LoginScreen(
-    navigator: DestinationsNavigator
-) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Login Screen")
-        Button(onClick = {
-            navigator.navigate(
-                ProfileScreenDestination(
-                )
-            )
-        }) {
-            Text("Go to Profile Screen")
-        }
-    }
-}
-
-@Destination<RootGraph>
-@Composable
-fun ProfileScreen(
-    navigator: DestinationsNavigator,
-) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = {
-            navigator.navigate(PostScreenDestination())
-        }) {
-            Text("Go to Post Screen")
-        }
-    }
-}
-
-@Destination<RootGraph>
-@Composable
-fun PostScreen(
-    showOnlyPostsByUser: Boolean = false
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Post Screen, $showOnlyPostsByUser")
-    }
-}
+//
+//@Destination<RootGraph>(start = true)
+//@Composable
+//fun LoginScreen(
+//    navigator: DestinationsNavigator
+//) {
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        Text("Login Screen")
+//        Button(onClick = {
+//            navigator.navigate(
+//                ProfileScreenDestination(
+//                )
+//            )
+//        }) {
+//            Text("Go to Profile Screen")
+//        }
+//    }
+//}
+//
+//@Destination<RootGraph>
+//@Composable
+//fun ProfileScreen(
+//    navigator: DestinationsNavigator,
+//) {
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        Button(onClick = {
+//            navigator.navigate(PostScreenDestination())
+//        }) {
+//            Text("Go to Post Screen")
+//        }
+//    }
+//}
+//
+//@Destination<RootGraph>
+//@Composable
+//fun PostScreen(
+//    showOnlyPostsByUser: Boolean = false
+//) {
+//    Box(
+//        modifier = Modifier.fillMaxSize(),
+//        contentAlignment = Alignment.Center
+//    ) {
+//        Text(text = "Post Screen, $showOnlyPostsByUser")
+//    }
+//}
