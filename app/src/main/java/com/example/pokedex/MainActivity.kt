@@ -31,9 +31,6 @@ import com.ramcosta.composedestinations.generated.destinations.PostScreenDestina
 import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -67,57 +64,4 @@ fun PokemonDetailScreen(
         name
     }
 
-}
-
-@Destination<RootGraph>(start = true)
-@Composable
-fun LoginScreen(
-    navigator: DestinationsNavigator
-) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Login Screen")
-        Button(onClick = {
-            navigator.navigate(
-                ProfileScreenDestination(
-                )
-            )
-        }) {
-            Text("Go to Profile Screen")
-        }
-    }
-}
-
-@Destination<RootGraph>
-@Composable
-fun ProfileScreen(
-    navigator: DestinationsNavigator,
-) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = {
-            navigator.navigate(PostScreenDestination())
-        }) {
-            Text("Go to Post Screen")
-        }
-    }
-}
-
-@Destination<RootGraph>
-@Composable
-fun PostScreen(
-    showOnlyPostsByUser: Boolean = false
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Post Screen, $showOnlyPostsByUser")
-    }
 }
