@@ -95,9 +95,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx.v231)
 
     // Coil
-    implementation(libs.coil)
-    implementation(libs.accompanist.coil)
-
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    
     implementation(libs.palette.v7)
 
     implementation("androidx.compose.material3:material3:1.1.2")
