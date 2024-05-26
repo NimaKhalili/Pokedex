@@ -54,7 +54,8 @@ import com.example.pokedex.ui.theme.RobotoCondensed
 
 @Composable
 fun PokemonListScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: PokemonListViewModel = hiltViewModel()
 ) {
     Surface(
         color = MaterialTheme.colorScheme.background //arcihve age light mode va dark modesh kar kard
@@ -73,7 +74,9 @@ fun PokemonListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-            )
+            ){//har zaman ke dar SearchBar chizi type konim in block call mishe //in block dar vaghe haman parametere method SearchBar ast ke sakhtim
+                viewModel.searchPokemonList(it)
+            }
             Spacer(modifier = Modifier.height(16.dp))
             PokemonList(navController = navController)
         }
@@ -89,16 +92,17 @@ fun PokemonList(
     val endReach by remember { viewModel.endReached }
     val loadError by remember { viewModel.loadError }
     val isLoading by remember { viewModel.isLoading }
+    val isSearching by remember { viewModel.isSearching }
 
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
         val itemCount =
-            if (pokemonList.size % 2 == 0) { //agar tedad itemha zoj bod(chon list ma 2ta 2ta hast dar UI)
+            if (pokemonList.size % 2 == 0) { // agar tedad itemha zoj bod(chon list ma 2ta 2ta hast dar UI)
                 pokemonList.size / 2 // size ra ba 2 taghsim mikonim ta nesf beshe chon gharare 2ta 2ta neshon bedim
             } else {
                 pokemonList.size / 2 + 1 // chon fard hast yek item ezafe miad dar list 2 tayi +1 ke akharin item hast ke tanha ast
             }
         items(itemCount) {
-            if (it >= itemCount - 1 && !endReach && !isLoading) {// agar list be akhar resid && agar list tamam shod
+            if (it >= itemCount - 1 && !endReach && !isLoading && !isSearching) { // agar list be akhar resid && agar list tamam shod &&isSearching baraye inke dar hale search nabashim
                 viewModel.loadPokemonPaginated() // item haye jadid ra request mikone az viewModel ta az server begire
             }
             PokedexRow(rowIndex = it, entries = pokemonList, navController = navController)
@@ -233,7 +237,7 @@ fun PokedexEntry(
 fun SearchBar(
     modifier: Modifier = Modifier,
     hint: String = "",
-    onSearch: (String) -> Unit = {}
+    onSearch: (String) -> Unit = {} //inja search etefagh miofte(dar jaye method SearchBar use mishe dar dakhele { } )
 ) {
     var text by remember {
         mutableStateOf("")
@@ -259,7 +263,8 @@ fun SearchBar(
                 .background(Color.White, CircleShape)
                 .padding(horizontal = 20.dp, vertical = 12.dp)
                 .onFocusChanged {
-                    isHintDisplayed = !it.hasFocus
+                    //vaghti it.hasFocus true nist hint display mishavad  hamchenin agar searchBar khali nabod
+                    isHintDisplayed = !it.hasFocus && text.isNotEmpty()
                 }
         )
         if (isHintDisplayed) {
