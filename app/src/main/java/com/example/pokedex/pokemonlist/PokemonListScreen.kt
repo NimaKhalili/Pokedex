@@ -98,7 +98,7 @@ fun PokemonList(
                 pokemonList.size / 2 + 1 // chon fard hast yek item ezafe miad dar list 2 tayi +1 ke akharin item hast ke tanha ast
             }
         items(itemCount) {
-            if (it >= itemCount - 1 && !endReach) {// agar list be akhar resid && agar list tamam shod
+            if (it >= itemCount - 1 && !endReach && !isLoading) {// agar list be akhar resid && agar list tamam shod
                 viewModel.loadPokemonPaginated() // item haye jadid ra request mikone az viewModel ta az server begire
             }
             PokedexRow(rowIndex = it, entries = pokemonList, navController = navController)
@@ -142,8 +142,6 @@ fun PokedexRow(
     entries: List<PokedexListEntry>,
     navController: NavController
 ) {
-    /**   Need more learn   <===================================================================================== */
-
     Column {
         Row {
             PokedexEntry(
