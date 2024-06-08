@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,7 +59,7 @@ fun PokemonListScreen(
     viewModel: PokemonListViewModel = hiltViewModel()
 ) {
     Surface(
-        color = MaterialTheme.colorScheme.background //arcihve age light mode va dark modesh kar kard
+        color = MaterialTheme.colorScheme.background
     ) {
         Column {
             Spacer(modifier = Modifier.height(20.dp))
@@ -74,7 +75,7 @@ fun PokemonListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-            ){//har zaman ke dar SearchBar chizi type konim in block call mishe //in block dar vaghe haman parametere method SearchBar ast ke sakhtim
+            ) {
                 viewModel.searchPokemonList(it)
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -96,14 +97,16 @@ fun PokemonList(
 
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
         val itemCount =
-            if (pokemonList.size % 2 == 0) { // agar tedad itemha zoj bod(chon list ma 2ta 2ta hast dar UI)
-                pokemonList.size / 2 // size ra ba 2 taghsim mikonim ta nesf beshe chon gharare 2ta 2ta neshon bedim
+            if (pokemonList.size % 2 == 0) {
+                pokemonList.size / 2
             } else {
-                pokemonList.size / 2 + 1 // chon fard hast yek item ezafe miad dar list 2 tayi +1 ke akharin item hast ke tanha ast
+                pokemonList.size / 2 + 1
             }
         items(itemCount) {
-            if (it >= itemCount - 1 && !endReach && !isLoading && !isSearching) { // agar list be akhar resid && agar list tamam shod &&isSearching baraye inke dar hale search nabashim
-                viewModel.loadPokemonPaginated() // item haye jadid ra request mikone az viewModel ta az server begire
+            if (it >= itemCount - 1 && !endReach && !isLoading && !isSearching) {
+                LaunchedEffect(key1 = true) {
+                    viewModel.loadPokemonPaginated()
+                }
             }
             PokedexRow(rowIndex = it, entries = pokemonList, navController = navController)
         }
@@ -154,14 +157,14 @@ fun PokedexRow(
                 modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            if (entries.size >= rowIndex * 2 + 2) { //injori mi2onim ke hade aghal 2ta dge item monde baraye show
+            if (entries.size >= rowIndex * 2 + 2) {
                 PokedexEntry(
                     entry = entries[rowIndex * 2 + 1],
                     navController = navController,
                     modifier = Modifier.weight(1f)
                 )
             } else
-                Spacer(modifier = Modifier.weight(1f)) //Inja age item nadasht(fard bod)jash ro khali mizare
+                Spacer(modifier = Modifier.weight(1f))
         }
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -188,8 +191,8 @@ fun PokedexEntry(
             .background(
                 Brush.verticalGradient(
                     listOf(
-                        dominantColor,//up color
-                        defaultDominantColor//down color
+                        dominantColor,
+                        defaultDominantColor
                     )
                 )
             )
@@ -203,7 +206,7 @@ fun PokedexEntry(
         ) {
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(entry.imageUrl)//load shodan image az url
+                    .data(entry.imageUrl)
                     .crossfade(true)
                     .build(),
                 contentDescription = null,
@@ -211,8 +214,8 @@ fun PokedexEntry(
                     .size(120.dp)
                     .align(Alignment.CenterHorizontally),
                 onSuccess = {
-                    viewModel.calcDominantColor(it.result.drawable) { color -> //dominant color ro midim view model ta calc kone va color real ra be ma bede
-                        dominantColor = color // result ra midim be dominantColor ta update kone
+                    viewModel.calcDominantColor(it.result.drawable) { color ->
+                        dominantColor = color
                     }
                 },
                 loading = {
@@ -237,14 +240,14 @@ fun PokedexEntry(
 fun SearchBar(
     modifier: Modifier = Modifier,
     hint: String = "",
-    onSearch: (String) -> Unit = {} //inja search etefagh miofte(dar jaye method SearchBar use mishe dar dakhele { } )
+    onSearch: (String) -> Unit = {}
 ) {
     var text by remember {
         mutableStateOf("")
     }
 
     var isHintDisplayed by remember {
-        mutableStateOf(hint != "") //initial value 1 string empty nabashad so agar chizi baraye hint ersal konim ba TRUE start mishe va agar empty ersal konim FALSE mishe
+        mutableStateOf(hint != "")
     }
 
     Box(modifier = modifier) {
@@ -263,7 +266,6 @@ fun SearchBar(
                 .background(Color.White, CircleShape)
                 .padding(horizontal = 20.dp, vertical = 12.dp)
                 .onFocusChanged {
-                    //vaghti it.hasFocus true nist hint display mishavad  hamchenin agar searchBar khali nabod
                     isHintDisplayed = !it.hasFocus && text.isNotEmpty()
                 }
         )

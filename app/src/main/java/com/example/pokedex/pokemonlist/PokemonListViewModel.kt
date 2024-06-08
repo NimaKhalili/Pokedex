@@ -31,40 +31,38 @@ class PokemonListViewModel @Inject constructor(
     var endReached = mutableStateOf(false)
 
     private var chachedPokemonList =
-        listOf<PokedexListEntry>() //kolle list ra negah midarad ta bad az search 2bare an ra pass bedahad be list asli
-    private var isSearchStarting = true // zamani true hast ke SearchBar Empty bashe
+        listOf<PokedexListEntry>()
+    private var isSearchStarting = true
     var isSearching =
-        mutableStateOf(false) //ta zamani ke field SearchBar dakhelesh text dare isSearching True mishavad
+        mutableStateOf(false)
 
     init {
         loadPokemonPaginated()
     }
 
     fun searchPokemonList(query: String) {
-        val listToSearch = if (isSearchStarting) { //vaghti isSearchStarting empty bashe yani taze search mikhad shoro beshe pas kolle list ro behesh pass midim
+        val listToSearch = if (isSearchStarting) {
             pokemonList.value
         } else {
             chachedPokemonList
         }
 
-        //chera Default ? baraye operation cpu hayi ast ke main thread ra kami bish az har dargir mikonand zira ma dar yek list belghoVVe tolani search mikonim
         viewModelScope.launch(Dispatchers.Default) {
-            if (query.isEmpty()){ //yani user text ra az SearchBar delete karde va alan empty hast pas bayad kolle list ro 2bare neshon bedim
+            if (query.isEmpty()) {
                 pokemonList.value = chachedPokemonList
-                isSearching.value = false //yain dge search nemikonim
-                isSearchStarting = true //amade baraye next searche
+                isSearching.value = false
+                isSearchStarting = true
                 return@launch
-            }
-            else{
+            } else {
                 val results = listToSearch.filter {
-                    it.pokemonName.contains(query.trim(), ignoreCase = true) || //ignoreCase be uppercase va downercase hasas nmishe
-                        it.number.toString() == query.trim() //ba pokemon number ham mishe search kard
+                    it.pokemonName.contains(query.trim(), ignoreCase = true) ||
+                            it.number.toString() == query.trim()
                 }
-                if(isSearchStarting){ //vaghti searchi ra start konim faAl mishe
-                    chachedPokemonList = pokemonList.value //ebteda kolle lis ra dar cach save mikonim
+                if (isSearchStarting) {
+                    chachedPokemonList = pokemonList.value
                     isSearchStarting = false
                 }
-                pokemonList.value = results //finally result dar list zakhire mishe //chera dar pokemonList ke list asli hast mirizim ? Chon besorate automat dar lazyColumn neshon mide
+                pokemonList.value = results
                 isSearching.value = true
             }
         }
@@ -75,14 +73,14 @@ class PokemonListViewModel @Inject constructor(
             val result = repository.getPokemonList(
                 PAGE_SIZE,
                 currPage * PAGE_SIZE
-            )//parameter 2 mgie az kojaye list shoro kone ke migim currPage * PAGE_SIZE yani currPage ebteda 0 ast pass offset 0 mishavad vaghti 20 ta pokemone aval ra load konim offset mishe 20 sepas pokemon 21 ra laod mikonim va be hamin tartib
+            )
             when (result) {
                 is Resource.Success -> {
                     endReached.value = currPage * PAGE_SIZE >= result.data!!.count
                     val pokedexEntries = result.data.results.mapIndexed { index, entry ->
-                        val number = if (entry.url.endsWith("/")) {//age akhari / bod
+                        val number = if (entry.url.endsWith("/")) {
                             entry.url.dropLast(1)
-                                .takeLastWhile { it.isDigit() } //akhari ro hazf kon va baghie ro age digit bod bgir
+                                .takeLastWhile { it.isDigit() }
                         } else {
                             entry.url.takeLastWhile { it.isDigit() }
                         }
@@ -90,17 +88,19 @@ class PokemonListViewModel @Inject constructor(
                             "https://raw.githubusercontent.com/pokeAPI/sprites/master/sprites/pokemon/${number}.png"
                         PokedexListEntry(entry.name.capitalize(Locale.ROOT), url, number.toInt())
                     }
-                    currPage++ //load next page
+                    currPage++
 
-                    loadError.value = "" //reset error because response is success now
+                    loadError.value = ""
                     isLoading.value = false
-                    pokemonList.value += pokedexEntries //ezafe kardan new list be edame list asli
+                    pokemonList.value += pokedexEntries
                 }
 
                 is Resource.Error -> {
                     loadError.value = result.message!!
                     isLoading.value = false
                 }
+
+                else -> {}
             }
         }
     }
